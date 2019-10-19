@@ -185,9 +185,6 @@ void Draw(){
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderFillRect(renderer, &pos);
     }
-    // Connect(0, 1%4, pps);
-    // Connect(4, 1%4 + 4, pps);
-    // Connect(0, 4, pps);
     for (int i = 0; i < 4; i++) {
         Connect(i, (i + 1) % 4, pps);
         Connect(i + 4, ((i + 1) % 4) + 4, pps);
