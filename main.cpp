@@ -201,7 +201,7 @@ void Connect(int i, int j, vector<vector<double>> pps){
     int jx = pps[j][0] * 200 + screenWidth / 2;
     int jy = pps[j][1] * 200 + screenHeight / 2;
     double slope = static_cast<double>((jy - iy)) / (jx - ix);
-    if(jx > ix && abs(slope) < 30){
+    if(jx > ix && abs(slope) < 40){
         for(double x = jx; x >= ix; x-=.1){
             pos.x = x + (cornerSize - lineSize) / 2;
             pos.y = slope * x + slope * (-1 * jx) + jy + (cornerSize - lineSize) / 2;
@@ -211,7 +211,7 @@ void Connect(int i, int j, vector<vector<double>> pps){
             SDL_RenderFillRect(renderer, &pos);
         }
     }
-    else if(jx < ix && abs(slope) < 30){
+    else if(jx < ix && abs(slope) < 40){
         for(double x = jx; x <= ix; x+=.1){
             pos.x = x + (cornerSize - lineSize) / 2;
             pos.y = slope * x + slope * (-1 * jx) + jy + (cornerSize - lineSize) / 2;
