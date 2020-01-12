@@ -10,7 +10,6 @@ void Connect(int i, int j, vector<vector<double>> pps);
 void Rots();
 void Setup();
 vector<vector<double>> MultMatrixs(vector<vector<double>> mat1, vector<vector<double>> mat2);
-double ScaleNum(double n, double minN, double maxN, double min, double max);
 
 SDL_Window *window;
 SDL_GLContext glContext;
@@ -20,9 +19,11 @@ SDL_Rect pos;
 
 int screenWidth = 500;
 int screenHeight = 500;
-int cornerSize = 5;
-int lineSize = 3;
-double ang = 1.5;
+int cornerSize = 1;
+int lineSize = 1;
+double xang = .47;
+double yang = 0;
+double zang = 0;
 
 vector<vector<double>> points;
 vector<vector<double>> rotx;
@@ -117,7 +118,7 @@ void Run()
     {   
         Draw();
         SDL_RenderPresent(renderer);
-        ang+=.01;
+        yang += .01;
         pos.x = 0;
         pos.y = 0;
         pos.w = screenWidth;
@@ -158,15 +159,12 @@ void Draw(){
     vector<vector<double>> pps;
     vector<vector<double>> xyz;
     vector<double> temp;
-    temp.clear();
     Rots();
     for(int i = 0; i < points.size(); i++){
         xyz.clear();
         temp.clear();
         for(int j = 0; j < points[i].size(); j++){
-            temp.push_back(points[i][j]);
-            xyz.push_back(temp);
-            temp.clear();
+            xyz.push_back({points[i][j]});
         }
         vector<vector<double>> rotated = MultMatrixs(roty, xyz);
         rotated = MultMatrixs(rotx, rotated);
@@ -178,8 +176,8 @@ void Draw(){
         }
         pps.push_back(temp);
 
-        pos.x = pps[i][0] * 200 + screenWidth / 2;
-        pos.y = pps[i][1] * 200 + screenHeight / 2;
+        pos.x = pps[i][0] * 100 + screenWidth / 2;
+        pos.y = pps[i][1] * 100 + screenHeight / 2;
         pos.w = cornerSize;
         pos.h = cornerSize;
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -193,10 +191,10 @@ void Draw(){
 }
 
 void Connect(int i, int j, vector<vector<double>> pps){
-    int ix = pps[i][0] * 200 + screenWidth / 2;
-    int iy = pps[i][1] * 200 + screenHeight / 2;
-    int jx = pps[j][0] * 200 + screenWidth / 2;
-    int jy = pps[j][1] * 200 + screenHeight / 2;
+    int ix = pps[i][0] * 100 + screenWidth / 2;
+    int iy = pps[i][1] * 100 + screenHeight / 2;
+    int jx = pps[j][0] * 100 + screenWidth / 2;
+    int jy = pps[j][1] * 100 + screenHeight / 2;
     double slope = static_cast<double>((jy - iy)) / (jx - ix);
     double ang = atan2((jy - iy), (jx - ix));
     double slopex = cos(ang);
@@ -263,59 +261,17 @@ vector<vector<double>> MultMatrixs(vector<vector<double>> mat1, vector<vector<do
 }
 
 void Setup(){
-    vector<double> temp1;
-    temp1.clear();
-    temp1.push_back(-.5);
-    temp1.push_back(-.5);
-    temp1.push_back(-.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(.5);
-    temp1.push_back(-.5);
-    temp1.push_back(-.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(.5);
-    temp1.push_back(.5);
-    temp1.push_back(-.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(-.5);
-    temp1.push_back(.5);
-    temp1.push_back(-.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(-.5);
-    temp1.push_back(-.5);
-    temp1.push_back(.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(.5);
-    temp1.push_back(-.5);
-    temp1.push_back(.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(.5);
-    temp1.push_back(.5);
-    temp1.push_back(.5);
-    points.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(-.5);
-    temp1.push_back(.5);
-    temp1.push_back(.5);
-    points.push_back(temp1);
-    temp1.clear();
-
-    temp1.push_back(1);
-    temp1.push_back(0);
-    temp1.push_back(0);
-    projection.push_back(temp1);
-    temp1.clear();
-    temp1.push_back(0);
-    temp1.push_back(1);
-    temp1.push_back(0);
-    projection.push_back(temp1);
-    temp1.clear();
+    points.push_back({-1, -1, -1});
+    points.push_back({1, -1, -1});
+    points.push_back({1, 1, -1});
+    points.push_back({-1, 1, -1});
+    points.push_back({-1, -1, 1});
+    points.push_back({1, -1, 1});
+    points.push_back({1, 1, 1});
+    points.push_back({-1, 1, 1});
+    
+    projection.push_back({1, 0, 0});
+    projection.push_back({0, 1, 0});
 }
 
 void Rots(){
@@ -324,56 +280,15 @@ void Rots(){
     roty.clear();
     rotz.clear();
 
-    temp.clear();
-    temp.push_back(1);
-    temp.push_back(0);
-    temp.push_back(0);
-    rotx.push_back(temp);
-    temp.clear();
-    temp.push_back(0);
-    temp.push_back(cos(ang));
-    temp.push_back(-1*sin(ang));
-    rotx.push_back(temp);
-    temp.clear();
-    temp.push_back(0);
-    temp.push_back(sin(ang));
-    temp.push_back(cos(ang));
-    rotx.push_back(temp);
-    temp.clear();
+    rotx.push_back({1, 0, 0});
+    rotx.push_back({0, cos(xang), -1*sin(xang)});
+    rotx.push_back({0, sin(xang), cos(xang)});
 
-    temp.push_back(cos(ang));
-    temp.push_back(0);
-    temp.push_back(sin(ang));
-    roty.push_back(temp);
-    temp.clear();
-    temp.push_back(0);
-    temp.push_back(1);
-    temp.push_back(0);
-    roty.push_back(temp);
-    temp.clear();
-    temp.push_back(-1*sin(ang));
-    temp.push_back(0);
-    temp.push_back(cos(ang));
-    roty.push_back(temp);
-    temp.clear();
+    roty.push_back({cos(yang), 0, sin(yang)});
+    roty.push_back({0, 1, 0});
+    roty.push_back({-1*sin(yang), 0, cos(yang)});
 
-    temp.push_back(cos(ang));
-    temp.push_back(-1*sin(ang));
-    temp.push_back(0);
-    rotz.push_back(temp);
-    temp.clear();
-    temp.push_back(sin(ang));
-    temp.push_back(cos(ang));
-    temp.push_back(0);
-    rotz.push_back(temp);
-    temp.clear();
-    temp.push_back(0);
-    temp.push_back(0);
-    temp.push_back(1);
-    rotz.push_back(temp);
-    temp.clear();
-}
-
-double ScaleNum(double n, double minN, double maxN, double min, double max){
-    return (((n - minN) / (maxN - minN)) * (max - min)) + min;
+    rotz.push_back({cos(zang), -1*sin(zang), 0});
+    rotz.push_back({sin(zang), cos(zang), 0});
+    rotz.push_back({0, 0, 1});
 }
